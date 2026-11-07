@@ -1,0 +1,14 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "js/ts.experimental.useTsgo": true,
+  "js/ts.preferences.importModuleSpecifierEnding": "js",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true, // Use the workspace TypeScript version
+
+  "[javascript][json][jsonc][typescript][markdown][yml]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  }
+}

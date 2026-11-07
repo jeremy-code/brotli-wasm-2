@@ -1,0 +1,77 @@
+{
+  "name": "brotli-wasm-2",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/jeremy-code/brotli-wasm-2#readme",
+  "bugs": "https://github.com/jeremy-code/brotli-wasm-2/issues",
+  "license": "MIT",
+  "author": "Jeremy Nguyen <hi@jeremy.ng> (https://jeremy.ng/)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremy-code/brotli-wasm-2.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./imports": {
+      "types": "./dist/imports.d.ts",
+      "default": "./dist/imports.js"
+    },
+    "./interfaces": {
+      "types": "./dist/interfaces.d.ts",
+      "default": "./dist/interfaces.js"
+    },
+    "./brotli.wasm": "./dist/brotli.wasm",
+    "./loaders": {
+      "browser": {
+        "types": "./dist/loaders/browser.d.ts",
+        "default": "./dist/loaders/browser.js"
+      },
+      "node": {
+        "types": "./dist/loaders/node.d.ts",
+        "default": "./dist/loaders/node.js"
+      },
+      "default": {
+        "types": "./dist/loaders/browser.d.ts",
+        "default": "./dist/loaders/browser.js"
+      }
+    }
+  },
+  "scripts": {
+    "prebuild": "mkdir -p dist && docker run --rm -v ./:/src $(docker build -q .) ./scripts/compile.sh",
+    "build": "tsc",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.76.0",
+    "oxlint": "^1.91.0",
+    "typescript": "7.1.0-beta"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.16.1",
+      "onFail": "download"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "26.13.0",
+      "onFail": "download"
+    }
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}
