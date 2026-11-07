@@ -38,6 +38,10 @@
     },
     "./brotli.wasm": "./dist/brotli.wasm",
     "./loaders": {
+      "workerd": {
+        "types": "./dist/loaders/browser.d.ts",
+        "default": "./dist/loaders/browser.js"
+      },
       "browser": {
         "types": "./dist/loaders/browser.d.ts",
         "default": "./dist/loaders/browser.js"
