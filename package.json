@@ -43,8 +43,8 @@
         "default": "./dist/loaders/browser.js"
       },
       "workerd": {
-        "types": "./dist/loaders/browser.d.ts",
-        "default": "./dist/loaders/browser.js"
+        "types": "./dist/loaders/node.d.ts",
+        "default": "./dist/loaders/node.js"
       },
       "browser": {
         "types": "./dist/loaders/browser.d.ts",
