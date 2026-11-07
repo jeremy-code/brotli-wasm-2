@@ -35,7 +35,7 @@ brotliCompress(new TextEncoder().encode("Hello world!"), {
 brotliDecompress(brotliCompress(new TextEncoder().encode("Hello world!")));
 ```
 
-This requires Node.js v24.0.5 or above (or Node.js v24.0.0 with flag `--js-source-phase-imports`). In Webpack, make sure [`experiments.sourceImport`](https://webpack.js.org/configuration/experiments/#experimentssourceimport) is set to true. This is also supported on Cloudflare's [workerd](https://github.com/cloudflare/workerd/blob/519e60ed20d0848c24920d128af266e74afa33f4/src/workerd/tests/module-imports-test.js#L23) and [Rollup](https://github.com/rollup/rollup/issues/6011).
+This requires Node.js v24.0.5 or above (or Node.js v24.0.0 with flag `--js-source-phase-imports`) or Deno [version v2.6](https://deno.com/blog/v2.6#source-phase-imports) or higher. In Webpack, make sure [`experiments.sourceImport`](https://webpack.js.org/configuration/experiments/#experimentssourceimport) is set to true. This is also supported on Cloudflare's [workerd](https://github.com/cloudflare/workerd/blob/519e60ed20d0848c24920d128af266e74afa33f4/src/workerd/tests/module-imports-test.js#L23) and [Rollup](https://github.com/rollup/rollup/issues/6011).
 
 ### Manual instantiation fallback
 
