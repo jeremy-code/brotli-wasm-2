@@ -5,6 +5,10 @@ node_modules/
 .pnp
 .pnp.js
 
+# Testing
+.vitest/
+coverage/
+
 # Build Outputs
 dist/
 
