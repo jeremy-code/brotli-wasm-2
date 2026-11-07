@@ -1,8 +1,15 @@
 {
   "name": "brotli-wasm-2",
   "version": "0.0.0",
-  "description": "",
-  "keywords": [],
+  "description": "JavaScript bindings for Brotli compression compiled to WebAssembly",
+  "keywords": [
+    "brotli",
+    "compress",
+    "compression",
+    "decompress",
+    "decompression",
+    "wasm"
+  ],
   "homepage": "https://github.com/jeremy-code/brotli-wasm-2#readme",
   "bugs": "https://github.com/jeremy-code/brotli-wasm-2/issues",
   "license": "MIT",
