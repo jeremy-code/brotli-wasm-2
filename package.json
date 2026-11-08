@@ -1,6 +1,6 @@
 {
   "name": "brotli-wasm-2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "JavaScript bindings for Brotli compression compiled to WebAssembly",
   "keywords": [
     "brotli",
