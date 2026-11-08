@@ -1,10 +1,22 @@
 # syntax=docker/dockerfile:1
 FROM ghcr.io/webassembly/wasi-sdk:wasi-sdk-34
 
+ARG BINARYEN_VERSION=133
 ARG BROTLI_VERSION=1.2.1
 ENV PREFIX=/opt/brotli
 ENV WASI_SDK_PATH="/opt/wasi-sdk"
 ENV PATH="${WASI_SDK_PATH}/bin:${PATH}"
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends wget; \
+    rm -rf /var/lib/apt/lists/
+
+RUN set -eux; \
+    wget -q "https://github.com/WebAssembly/binaryen/releases/download/version_${BINARYEN_VERSION}/binaryen-version_${BINARYEN_VERSION}-$(uname -m)-linux.tar.gz" -O /tmp/binaryen.tar.gz; \
+    tar -xzf /tmp/binaryen.tar.gz -C /tmp; \
+    install -m 0755 "/tmp/binaryen-version_${BINARYEN_VERSION}/bin/wasm-opt" /usr/local/bin/wasm-opt; \
+    rm -rf /tmp/binaryen.tar.gz "/tmp/binaryen-version_${BINARYEN_VERSION}"
 
 ADD https://github.com/google/brotli.git#v${BROTLI_VERSION} /tmp/brotli
 

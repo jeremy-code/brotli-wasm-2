@@ -30,3 +30,12 @@ clang \
   -lbrotlicommon \
   -o $OUTPUT_DIR/brotli.wasm \
   $PWD/src/brotli.c
+
+wasm-opt \
+  $OUTPUT_DIR/brotli.wasm \
+  --generate-global-effects \
+  --flatten \
+  --rereloop \
+  -O3 \
+  -O3 \
+  -o $OUTPUT_DIR/brotli.wasm
