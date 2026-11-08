@@ -9,9 +9,6 @@
 WASM_IMPORT("env", "getByteLength")
 int get_byte_length(__externref_t target);
 
-WASM_IMPORT("env", "getUndefined")
-__externref_t get_undefined();
-
 WASM_IMPORT("env", "copyBytesFromJs")
 void copy_bytes_from_js(void *ptr, __externref_t target);
 

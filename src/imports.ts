@@ -15,8 +15,6 @@ class ProcessExit extends Error {
 const getByteLength = (val: ArrayBufferLike | ArrayBufferView) =>
   val.byteLength;
 
-const getUndefined = () => undefined;
-
 const enum Mode {
   Generic,
   Text,
@@ -65,7 +63,6 @@ const getImports = (options?: { memory?: WebAssembly.Memory | undefined }) => {
     env: {
       memory,
       getByteLength,
-      getUndefined,
       copyBytesFromJs: (
         ptr: number,
         data: ArrayBufferLike | ArrayBufferView,

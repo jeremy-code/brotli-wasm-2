@@ -25,20 +25,20 @@ __externref_t brotli_compress(__externref_t buf, __externref_t js_options) {
   int input_size = get_byte_length(buf);
   uint8_t *input_ptr = malloc(input_size * sizeof(uint8_t));
   if (input_ptr == NULL) {
-    return get_undefined();
+    return __builtin_wasm_ref_null_extern();
   }
   copy_bytes_from_js(input_ptr, buf);
 
   size_t output_size = BrotliEncoderMaxCompressedSize(input_size);
   if (output_size == 0) {
     free(input_ptr);
-    return get_undefined();
+    return __builtin_wasm_ref_null_extern();
   }
 
   uint8_t *output_ptr = malloc(output_size);
   if (output_ptr == NULL) {
     free(input_ptr);
-    return get_undefined();
+    return __builtin_wasm_ref_null_extern();
   }
 
   BROTLI_BOOL result =
@@ -48,7 +48,7 @@ __externref_t brotli_compress(__externref_t buf, __externref_t js_options) {
   if (result != BROTLI_TRUE) {
     free(input_ptr);
     free(output_ptr);
-    return get_undefined();
+    return __builtin_wasm_ref_null_extern();
   }
 
   __externref_t output = copy_bytes_to_js(output_ptr, output_size);
@@ -62,14 +62,14 @@ __externref_t brotli_decompress(__externref_t buf) {
   int input_size = get_byte_length(buf);
   uint8_t *input_ptr = malloc(input_size * sizeof(uint8_t));
   if (input_ptr == NULL) {
-    return get_undefined();
+    return __builtin_wasm_ref_null_extern();
   }
   copy_bytes_from_js(input_ptr, buf);
 
   BrotliDecoderState *state = BrotliDecoderCreateInstance(NULL, NULL, NULL);
   if (state == NULL) {
     free(input_ptr);
-    return get_undefined();
+    return __builtin_wasm_ref_null_extern();
   }
 
   size_t output_capacity = input_size * 4;
@@ -81,7 +81,7 @@ __externref_t brotli_decompress(__externref_t buf) {
   if (output_ptr == NULL) {
     free(input_ptr);
     BrotliDecoderDestroyInstance(state);
-    return get_undefined();
+    return __builtin_wasm_ref_null_extern();
   }
 
   BrotliDecoderResult result = BROTLI_DECODER_RESULT_NEEDS_MORE_INPUT;
@@ -106,7 +106,7 @@ __externref_t brotli_decompress(__externref_t buf) {
         free(input_ptr);
         free(output_ptr);
         BrotliDecoderDestroyInstance(state);
-        return get_undefined();
+        return __builtin_wasm_ref_null_extern();
       }
       output_ptr = new_output_ptr;
       next_out = output_ptr + bytes_written;
@@ -116,7 +116,7 @@ __externref_t brotli_decompress(__externref_t buf) {
       free(input_ptr);
       free(output_ptr);
       BrotliDecoderDestroyInstance(state);
-      return get_undefined();
+      return __builtin_wasm_ref_null_extern();
     }
   }
 

@@ -11,10 +11,10 @@ type Exports = {
   brotliCompress: (
     input: ArrayBufferLike | ArrayBufferView,
     options?: Options,
-  ) => Uint8Array<ArrayBuffer>;
+  ) => Uint8Array<ArrayBuffer> | null;
   brotliDecompress: (
     input: ArrayBufferLike | ArrayBufferView,
-  ) => Uint8Array<ArrayBuffer>;
+  ) => Uint8Array<ArrayBuffer> | null;
   version: () => string;
 };
 

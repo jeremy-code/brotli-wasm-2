@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { assert, describe, expect, it } from "vitest";
 
 import { brotliCompress, brotliDecompress, version } from "./index.ts";
 
@@ -38,6 +38,7 @@ describe("brotliCompress", () => {
     const compressedData = brotliCompress(
       new TextEncoder().encode("Hello world"),
     );
+    assert.isNotNull(compressedData);
     expect(compressedData).toBeInstanceOf(Uint8Array);
     expect(compressedData.buffer).toBeInstanceOf(ArrayBuffer);
   });
@@ -57,11 +58,16 @@ describe("brotliCompress", () => {
   describe("window size", () => {
     it("defaults to lgwin of 22", () => {
       const data = new TextEncoder().encode("Hello world");
-      expect(getBrotliWindowSizeParameter(brotliCompress(data))).toBe(22);
+      const defaultCompressedData = brotliCompress(data);
+      const defaultCompressedDataWithOptions = brotliCompress(data, {
+        mode: "text",
+        quality: 2,
+      });
+      assert.isNotNull(defaultCompressedData);
+      assert.isNotNull(defaultCompressedDataWithOptions);
+      expect(getBrotliWindowSizeParameter(defaultCompressedData)).toBe(22);
       expect(
-        getBrotliWindowSizeParameter(
-          brotliCompress(data, { mode: "text", quality: 2 }),
-        ),
+        getBrotliWindowSizeParameter(defaultCompressedDataWithOptions),
       ).toBe(22);
     });
 
@@ -70,6 +76,7 @@ describe("brotliCompress", () => {
       const compressedData = brotliCompress(data, {
         window: 10,
       });
+      assert.isNotNull(compressedData);
       expect(compressedData).toBeInstanceOf(Uint8Array);
       expect(compressedData.buffer).toBeInstanceOf(ArrayBuffer);
       expect(compressedData).toEqual(
@@ -82,7 +89,7 @@ describe("brotliCompress", () => {
 
 describe("brotliDecompress", () => {
   it("returns undefined for empty data", () => {
-    expect(brotliDecompress(new Uint8Array())).toBeUndefined();
+    expect(brotliDecompress(new Uint8Array())).toBeNull();
   });
 
   it("returns empty Uint8Array for compressed, empty data", () => {
