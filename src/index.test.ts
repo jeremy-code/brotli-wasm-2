@@ -88,7 +88,7 @@ describe("brotliCompress", () => {
 });
 
 describe("brotliDecompress", () => {
-  it("returns undefined for empty data", () => {
+  it("returns null for empty data", () => {
     expect(brotliDecompress(new Uint8Array())).toBeNull();
   });
 
