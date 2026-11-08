@@ -14,6 +14,7 @@ OPTIONS=(
   --wasm-opt
   -Wl,--import-memory
   -Wl,--initial-memory=524288
+  -Wl,--keep-section=target_features
   -Wl,--lto-O3
   -Wl,--no-entry
   -Wl,--strip-all
