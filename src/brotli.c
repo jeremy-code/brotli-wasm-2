@@ -14,14 +14,14 @@ typedef union ParsedOptions {
   uint32_t bits;
 } ParsedOptions;
 
-static inline Options deserialize_options(uint32_t options_value) {
+static inline Options parse_options(uint32_t options_value) {
   ParsedOptions parsed_options = {.bits = options_value};
   return parsed_options.options;
 }
 
 WASM_EXPORT("brotliCompress")
 __externref_t brotli_compress(__externref_t buf, __externref_t js_options) {
-  Options options = deserialize_options(serialize_options(js_options));
+  Options options = parse_options(serialize_options(js_options));
   int input_size = get_byte_length(buf);
   uint8_t *input_ptr = malloc(input_size * sizeof(uint8_t));
   if (input_ptr == NULL) {
