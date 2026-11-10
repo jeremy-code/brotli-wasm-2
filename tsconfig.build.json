@@ -10,5 +10,6 @@
     "noEmit": false,
     "outDir": "dist"
   },
-  "exclude": ["vitest.config.ts", "dist", "**/*.test.ts"]
+  "include": ["src"],
+  "exclude": ["**/*.test.ts"]
 }
