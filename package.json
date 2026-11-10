@@ -62,7 +62,7 @@
   },
   "scripts": {
     "prebuild": "mkdir -p dist && docker run --rm -v ./:/src $(docker build -q .) ./scripts/compile.sh",
-    "build": "tsc",
+    "build": "tsc --project ./tsconfig.build.json",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",

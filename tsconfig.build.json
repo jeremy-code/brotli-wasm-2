@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // Modules
+    "rootDir": "src",
+
+    // Emit
+    "declaration": true,
+    "noEmit": false,
+    "outDir": "dist"
+  },
+  "exclude": ["vitest.config.ts", "dist", "**/*.test.ts"]
+}
