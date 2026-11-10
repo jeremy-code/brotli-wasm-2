@@ -44,14 +44,12 @@ __externref_t brotli_compress(__externref_t buf, __externref_t js_options) {
   BROTLI_BOOL result =
       BrotliEncoderCompress(options.quality, options.window, options.mode,
                             input_size, input_ptr, &output_size, output_ptr);
+  __externref_t output = __builtin_wasm_ref_null_extern();
 
-  if (result != BROTLI_TRUE) {
-    free(input_ptr);
-    free(output_ptr);
-    return __builtin_wasm_ref_null_extern();
+  if (result == BROTLI_TRUE) {
+    output = copy_bytes_to_js(output_ptr, output_size);
   }
 
-  __externref_t output = copy_bytes_to_js(output_ptr, output_size);
   free(input_ptr);
   free(output_ptr);
   return output;
