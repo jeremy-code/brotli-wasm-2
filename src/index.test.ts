@@ -2,6 +2,7 @@ import * as webAssemblyEsmIntegration from "brotli-wasm-2/brotli.wasm";
 import { assert, describe, expect, it } from "vitest";
 
 import * as manualInstantiation from "./index.ts";
+
 /**
  * @see {@link https://github.com/google/brotli/blob/d89c4b1c52e25ddafe047bc78bbee5c1e24b1809/js/decode.ts#L77}
  * @see {@link https://www.rfc-editor.org/info/rfc7932/#section-9.1}
@@ -63,6 +64,28 @@ describe.for(
       );
     });
 
+    /**
+     * Freeing memory in WebAssembly doesn't actually shrink the memory buffer.
+     * However, we can at least guarantee that it does not expand further (i.e.
+     * memory marked as free is made avaliable for future allocations).
+     *
+     * @see {@link https://github.com/WebAssembly/design/issues/1300}
+     * @see {@link https://github.com/WebAssembly/design/issues/1397}
+     */
+    it("does not leak data", async () => {
+      const { memory } = await import("./imports.ts");
+      const randomData1 = new Uint8Array(0x10000);
+      const randomData2 = new Uint8Array(0x10000);
+      crypto.getRandomValues(randomData1);
+      crypto.getRandomValues(randomData2);
+
+      // compressedData may be null if out of memory
+      expect(brotliCompress(randomData1)).not.toBeNull();
+      const prevSize = memory.buffer.byteLength;
+      expect(brotliCompress(randomData2)).not.toBeNull();
+      expect(memory.buffer.byteLength).toBe(prevSize);
+    });
+
     describe("window size", () => {
       it("defaults to lgwin of 22", () => {
         const data = new TextEncoder().encode("Hello world");
@@ -120,6 +143,17 @@ describe.for(
           new Uint8Array([0x21, 0x28, 0x00, 0x004, ...data, 0x03]),
         ),
       ).toEqual(data);
+    });
+
+    it("does not leak data", async () => {
+      const { memory } = await import("./imports.ts");
+      const randomData = new Uint8Array(0x10000);
+      crypto.getRandomValues(randomData);
+      const compressedRandomData = brotliCompress(randomData);
+      assert.isNotNull(compressedRandomData);
+      const prevSize = memory.buffer.byteLength;
+      expect(brotliDecompress(compressedRandomData)).toEqual(randomData);
+      expect(memory.buffer.byteLength).toBe(prevSize);
     });
   });
 });
