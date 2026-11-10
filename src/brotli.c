@@ -72,10 +72,7 @@ __externref_t brotli_decompress(__externref_t buf) {
     return __builtin_wasm_ref_null_extern();
   }
 
-  size_t output_capacity = input_size * 4;
-  if (output_capacity < 4096) {
-    output_capacity = 4096;
-  }
+  size_t output_capacity = 4096;
 
   uint8_t *output_ptr = malloc(output_capacity);
   if (output_ptr == NULL) {
@@ -84,13 +81,13 @@ __externref_t brotli_decompress(__externref_t buf) {
     return __builtin_wasm_ref_null_extern();
   }
 
-  BrotliDecoderResult result = BROTLI_DECODER_RESULT_NEEDS_MORE_INPUT;
+  BrotliDecoderResult result;
   size_t available_in = input_size;
   const uint8_t *next_in = input_ptr;
   size_t available_out = output_capacity;
   uint8_t *next_out = output_ptr;
 
-  uint8_t output_size;
+  size_t output_size;
   while (1) {
     result = BrotliDecoderDecompressStream(state, &available_in, &next_in,
                                            &available_out, &next_out, NULL);
@@ -100,26 +97,23 @@ __externref_t brotli_decompress(__externref_t buf) {
       break;
     } else if (result == BROTLI_DECODER_RESULT_NEEDS_MORE_OUTPUT) {
       size_t bytes_written = output_capacity - available_out;
-      size_t new_output_capacity = output_capacity * 2;
-      uint8_t *new_output_ptr = realloc(output_ptr, new_output_capacity);
-      if (new_output_ptr == NULL) {
-        free(input_ptr);
-        free(output_ptr);
-        BrotliDecoderDestroyInstance(state);
-        return __builtin_wasm_ref_null_extern();
+      size_t new_output_capacity;
+      if (!__builtin_mul_overflow(output_capacity, 2, &new_output_capacity)) {
+        uint8_t *new_output_ptr = realloc(output_ptr, new_output_capacity);
+        if (new_output_ptr != NULL) {
+          output_ptr = new_output_ptr;
+          next_out = output_ptr + bytes_written;
+          available_out = new_output_capacity - bytes_written;
+          output_capacity = new_output_capacity;
+          continue;
+        }
       }
-      output_ptr = new_output_ptr;
-      next_out = output_ptr + bytes_written;
-      available_out = new_output_capacity - bytes_written;
-      output_capacity = new_output_capacity;
-    } else {
-      free(input_ptr);
-      free(output_ptr);
-      BrotliDecoderDestroyInstance(state);
-      return __builtin_wasm_ref_null_extern();
     }
+    free(input_ptr);
+    free(output_ptr);
+    BrotliDecoderDestroyInstance(state);
+    return __builtin_wasm_ref_null_extern();
   }
-
   __externref_t output = copy_bytes_to_js(output_ptr, output_size);
   free(input_ptr);
   free(output_ptr);
