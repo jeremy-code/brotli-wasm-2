@@ -15,7 +15,7 @@ RUN set -eux; \
 RUN set -eux; \
     wget -q "https://github.com/WebAssembly/binaryen/releases/download/version_${BINARYEN_VERSION}/binaryen-version_${BINARYEN_VERSION}-$(uname -m)-linux.tar.gz" -O /tmp/binaryen.tar.gz; \
     tar -xzf /tmp/binaryen.tar.gz -C /tmp; \
-    install -m 0755 "/tmp/binaryen-version_${BINARYEN_VERSION}/bin/wasm-opt" /usr/local/bin/wasm-opt; \
+    cp -v /tmp/binaryen-version_${BINARYEN_VERSION}/bin/wasm-* /usr/local/bin/;  \
     rm -rf /tmp/binaryen.tar.gz "/tmp/binaryen-version_${BINARYEN_VERSION}"
 
 ADD https://github.com/google/brotli.git#v${BROTLI_VERSION} /tmp/brotli
