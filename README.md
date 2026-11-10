@@ -37,9 +37,26 @@ brotliDecompress(brotliCompress(new TextEncoder().encode("Hello world!")));
 
 This requires Node.js v24.0.5 or above (or Node.js v24.0.0 with flag `--js-source-phase-imports`) or Deno [version v2.6](https://deno.com/blog/v2.6#source-phase-imports) or higher. While [Bun does not support source phase imports](https://github.com/oven-sh/bun/discussions/22333), it should work still since it supports [fetching file URLs](https://bun.com/docs/runtime/networking/fetch#file-urls-file). In Webpack, make sure [`experiments.sourceImport`](https://webpack.js.org/configuration/experiments/#experimentssourceimport) is set to true. This is also supported on Cloudflare's [workerd](https://github.com/cloudflare/workerd/blob/519e60ed20d0848c24920d128af266e74afa33f4/src/workerd/tests/module-imports-test.js#L23) and [Rollup](https://github.com/rollup/rollup/issues/6011).
 
+### WebAssembly ESM Integration
+
+[WebAssembly ESM integration](https://github.com/WebAssembly/esm-integration/tree/main/proposals/esm-integration) is a a Phase 3 proposal that allows importing WebAsssembly files directly as ES modules. It is supported as of [Node.js v24.0.5](https://nodejs.org/api/esm.html#wasm-modules) (v24.0.0 with flag `--experimental-wasm-modules`) and [Deno 2.1](https://docs.deno.com/runtime/reference/wasm/). It is supported in [Webpack](https://webpack.js.org/configuration/experiments/) or [Rspack](https://rspack.rs/config/experiments#experimentsasyncwebassembly) by enabling `experiments.asyncWebAssembly`, in Rolldown via [rolldown-plugin-wasm](https://github.com/sxzz/rolldown-plugin-wasm), and in [Vite natively since v8.1.0](https://vite.dev/blog/announcing-vite8-1#wasm-esm-integration-support). It can also be polyfilled via [es-module-shims](https://github.com/guybedford/es-module-shims).
+
+This may be preferred in some cases over the package entrypoint since [V8 can cache WebAssembly code instantiated via streaming](https://v8.dev/blog/wasm-code-caching).
+
+```js
+import { brotliCompress, brotliDecompress } from "brotli-wasm-2/brotli.wasm";
+
+brotliCompress(new TextEncoder().encode("Hello world!"));
+brotliCompress(new TextEncoder().encode("Hello world!"), {
+  quality: 2,
+  mode: "text",
+});
+brotliDecompress(brotliCompress(new TextEncoder().encode("Hello world!")));
+```
+
 ### Manual instantiation fallback
 
-The previous syntax should work on most runtimes and some bundlers (e.g. Rollup); however, if you want to instantiate it manually and use the exports directly from the WebAssembly instance, you can do so like this:
+The previous syntaxes should work on most runtimes and some bundlers (e.g. Rollup); however, if you want to instantiate it manually and use the exports directly from the WebAssembly instance, you can do so like this:
 
 #### Vite
 

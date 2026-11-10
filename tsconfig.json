@@ -13,6 +13,7 @@
     "strict": true,
 
     // Modules
+    "allowArbitraryExtensions": true,
     "module": "nodenext",
     "noUncheckedSideEffectImports": true,
     "rewriteRelativeImportExtensions": true,

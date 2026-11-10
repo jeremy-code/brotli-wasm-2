@@ -1,5 +1,7 @@
 import type { Options } from "./interfaces.ts";
 
+let memory = new WebAssembly.Memory({ initial: 8 });
+
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
@@ -14,6 +16,20 @@ class ProcessExit extends Error {
 
 const getByteLength = (val: ArrayBufferLike | ArrayBufferView) =>
   val.byteLength;
+
+const copyBytesFromJs = (
+  ptr: number,
+  data: ArrayBufferLike | ArrayBufferView,
+) => {
+  new Uint8Array(memory.buffer, ptr, data.byteLength).set(
+    ArrayBuffer.isView(data)
+      ? new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
+      : new Uint8Array(data),
+  );
+};
+
+const copyBytesToJs = (ptr: number, size: number) =>
+  new Uint8Array(memory.buffer, ptr, size).slice();
 
 const enum Mode {
   Generic,
@@ -56,40 +72,47 @@ const parseVersion = (version: number) => {
   return `${major}.${minor}.${patch}`;
 };
 
+// https://github.com/WebAssembly/WASI/blob/wasi-0.1/preview0/docs.md#-proc_exitrval-exitcode
+const proc_exit = (rval: number) => {
+  throw new ProcessExit(rval);
+};
+
+// https://github.com/WebAssembly/WASI/blob/wasi-0.1/preview0/docs.md#-random_getbuf-pointeru8-buf_len-size---result-errno
+const random_get = (buf: number, buf_len: number) => {
+  crypto.getRandomValues(new Uint8Array(memory.buffer, buf, buf_len));
+  return 0; /* Success */
+};
+
 const getImports = (options?: { memory?: WebAssembly.Memory | undefined }) => {
-  const memory = options?.memory ?? new WebAssembly.Memory({ initial: 8 });
+  if (options?.memory !== undefined) {
+    memory = options.memory;
+  }
 
   return {
-    env: {
+    "./imports.js": {
       memory,
       getByteLength,
-      copyBytesFromJs: (
-        ptr: number,
-        data: ArrayBufferLike | ArrayBufferView,
-      ) => {
-        new Uint8Array(memory.buffer, ptr, data.byteLength).set(
-          ArrayBuffer.isView(data)
-            ? new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
-            : new Uint8Array(data),
-        );
-      },
+      copyBytesFromJs,
       serializeOptions,
-      copyBytesToJs: (ptr: number, size: number) =>
-        new Uint8Array(memory.buffer, ptr, size).slice(),
+      copyBytesToJs,
       parseVersion,
-    },
-    wasi_snapshot_preview1: {
-      // https://github.com/WebAssembly/WASI/blob/wasi-0.1/preview0/docs.md#-proc_exitrval-exitcode
-      proc_exit(rval: number) {
-        throw new ProcessExit(rval);
-      },
-      // https://github.com/WebAssembly/WASI/blob/wasi-0.1/preview0/docs.md#-random_getbuf-pointeru8-buf_len-size---result-errno
-      random_get(buf: number, buf_len: number) {
-        crypto.getRandomValues(new Uint8Array(memory.buffer, buf, buf_len));
-        return 0; /* Success */
-      },
+      proc_exit,
+      random_get,
     },
   } satisfies WebAssembly.Imports;
 };
 
-export { getImports };
+export {
+  // WebAssembly imports
+  memory,
+  getByteLength,
+  copyBytesFromJs,
+  serializeOptions,
+  copyBytesToJs,
+  parseVersion,
+  proc_exit,
+  random_get,
+  // Additional exports
+  getImports,
+  ProcessExit,
+};
