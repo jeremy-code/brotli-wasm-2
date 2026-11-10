@@ -1,5 +1,14 @@
 # brotli-wasm-2
 
+## 0.0.3
+
+### Patch Changes
+
+- [`120888e`](https://github.com/jeremy-code/brotli-wasm-2/commit/120888e6ba14c7a0be00fd6e4c4c92208dc78a5d) Thanks [@jeremy-code](https://github.com/jeremy-code)! - feat: add support for WebAssembly ESM integration
+
+  - WebAssembly ESM integration is now supported. In supported runtimes, import
+    from `brotli-wasm-2/brotli.wasm`
+
 ## 0.0.2
 
 ### Patch Changes
