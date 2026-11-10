@@ -1,5 +1,11 @@
 # brotli-wasm-2
 
+## 0.0.4
+
+### Patch Changes
+
+- [`c18f712`](https://github.com/jeremy-code/brotli-wasm-2/commit/c18f7122f5ddd81ec52b7dc6f5e80b7bba957447) Thanks [@jeremy-code](https://github.com/jeremy-code)! - fix: fix bug in brotli_decompress where data was truncated with length > 4096
+
 ## 0.0.3
 
 ### Patch Changes
