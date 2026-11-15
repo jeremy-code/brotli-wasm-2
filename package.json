@@ -61,7 +61,7 @@
     }
   },
   "scripts": {
-    "prebuild": "mkdir -p dist && docker run --rm -v ./:/src $(docker build -q .) ./scripts/compile.sh",
+    "prebuild": "mkdir -p dist && docker build -t brotli-wasm-2 . && docker run --rm -v $(pwd):/src brotli-wasm-2 ./scripts/compile.sh",
     "build": "tsc --project ./tsconfig.build.json",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
