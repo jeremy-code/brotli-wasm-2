@@ -78,10 +78,10 @@ const assertAllFeaturesAreSupported = () => {
       "The feature 'Non-trapping Float-to-int Conversions' is not supported.",
     );
   }
-  if (!isBulkMemoryOperationsSupported) {
+  if (!isBulkMemoryOperationsSupported()) {
     throw new Error("The feature 'Bulk Memory Operations' is not supported.");
   }
-  if (!isReferenceTypesSupported) {
+  if (!isReferenceTypesSupported()) {
     throw new Error("The feature 'Reference Types' is not supported.");
   }
 };
